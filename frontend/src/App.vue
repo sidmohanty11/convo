@@ -5,7 +5,7 @@
 </template>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Nixie+One&family=WindSong:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nixie+One&display=swap");
 body {
   background-color: black;
   margin: 0;

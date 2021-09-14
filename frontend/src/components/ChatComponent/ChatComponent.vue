@@ -35,6 +35,7 @@ export default {
   font-size: 20px;
   color: whitesmoke;
   background-color: transparent;
+  font-family: "Nixie One", cursive;
 }
 .user-image {
   max-height: 50px;
