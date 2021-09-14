@@ -2,14 +2,39 @@
   <div class="login">
     <h1>CONVO.</h1>
     <h2>Login</h2>
-    <input type="email" placeholder="email" />
-    <input type="password" placeholder="password" />
+    <input type="email" placeholder="email" v-model="email" />
+    <input type="password" placeholder="password" v-model="password" />
     <p>
       Don't have an account yet? <router-link to="/signup">Signup.</router-link>
     </p>
-    <button><i class="fas fa-arrow-right"></i></button>
+    <button @click="login"><i class="fas fa-arrow-right"></i></button>
   </div>
 </template>
+
+<script>
+import axios from "../axios";
+export default {
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+  methods: {
+    async login() {
+      const { email, password } = this;
+      const res = await axios.post("/login", { email, password });
+      console.log(res);
+      if (res.status === 200) {
+        sessionStorage.setItem("user", JSON.stringify(res.data));
+        this.$router.push("/");
+      } else {
+        console.log("error bro");
+      }
+    },
+  },
+};
+</script>
 
 <style scoped>
 .login {
