@@ -2,9 +2,13 @@ package controllers
 
 import (
 	"chat/models"
+	"log"
 	"net/http"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/pusher/pusher-http-go"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -55,6 +59,22 @@ func (h *Handler) CreateMessage(c echo.Context) (err error) {
 	if m.From == "" || m.To == "" || m.Message == "" {
 		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "invalid to or message fields"}
 	}
+
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	pusherClient := pusher.Client{
+		AppID:   os.Getenv("PUSHER_APP_ID"),
+		Key:     os.Getenv("PUSHER_APP_KEY"),
+		Secret:  os.Getenv("PUSHER_APP_SECRET"),
+		Cluster: "ap2",
+		Secure:  true,
+	}
+
+	data := echo.Map{"message": m}
+	pusherClient.Trigger("my-channel", "my-event", data)
 
 	// Find user from database
 	db := h.DB.Clone()
