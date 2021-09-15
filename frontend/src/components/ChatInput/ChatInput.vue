@@ -1,12 +1,46 @@
 <template>
   <div class="container">
-    <input type="text" placeholder="Type your message..." />
-    <button><i class="fas fa-paper-plane"></i></button>
+    <input type="text" v-model="message" placeholder="Type your message..." />
+    <button @click="sendMessage"><i class="fas fa-paper-plane"></i></button>
   </div>
 </template>
 
 <script>
-export default {};
+import axios from "../../axios";
+export default {
+  data() {
+    return {
+      message: "",
+    };
+  },
+  props: {
+    userTo: {
+      default: "",
+    },
+    userFrom: {
+      default: "",
+    },
+  },
+  methods: {
+    async sendMessage() {
+      const user = JSON.parse(sessionStorage.getItem("user"));
+      try {
+        const res = await axios.post(
+          "/messages",
+          {
+            to: this.userTo,
+            from: this.userFrom,
+            message: this.message,
+          },
+          { headers: { Authorization: `Bearer ${user.token}` } }
+        );
+        location.reload();
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>

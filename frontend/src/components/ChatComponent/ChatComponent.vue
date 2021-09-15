@@ -1,20 +1,15 @@
 <template>
   <div class="container">
-    <img class="user-image" :src="imageUrl" />
-    <button class="chat-component">@{{ username }}</button>
+    <img class="user-image" src="" />
+    <button @click="pushFunc(chat.to)" class="chat-component">
+      @{{ chat.to }}
+    </button>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    username: {
-      required: true,
-    },
-    imageUrl: {
-      default: "",
-    },
-  },
+  props: ["chat", "pushFunc"],
 };
 </script>
 
@@ -27,6 +22,11 @@ export default {
   border-radius: 7px;
   display: flex;
   background-color: #222;
+  transition: 0.5s;
+}
+
+.container:hover {
+  background-color: #b10e0b;
 }
 
 .chat-component {
@@ -36,6 +36,7 @@ export default {
   color: whitesmoke;
   background-color: transparent;
   font-family: "Nixie One", cursive;
+  cursor: pointer;
 }
 .user-image {
   max-height: 50px;

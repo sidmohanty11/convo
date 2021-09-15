@@ -48,7 +48,8 @@ func main() {
 	e.POST("/signup", h.Signup)
 	e.POST("/login", h.Login)
 	e.POST("/messages", h.CreateMessage)
-	e.GET("/messages", h.FetchMessage)
+	e.GET("/messages/:username", h.FetchMessage)
+	e.GET("/messages/:username/:userFrom", h.GetChat)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))

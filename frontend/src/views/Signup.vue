@@ -6,6 +6,7 @@
     <input type="text" placeholder="name" v-model="name" />
     <input type="email" placeholder="email" v-model="email" />
     <input type="password" placeholder="password" v-model="password" />
+    <input type="text" placeholder="image_url" v-model="image_url" />
     <p>
       Already have an account? <router-link to="/login">Login.</router-link>
     </p>
@@ -23,18 +24,20 @@ export default {
       password: "",
       name: "",
       username: "",
+      image_url: "",
     };
   },
   methods: {
     async signup() {
-      const { email, password, name, username } = this;
+      const { email, password, name, username, image_url } = this;
       const res = await axios.post("/signup", {
         email,
         password,
         name,
         username,
+        image_url,
       });
-      if (res.status === 200) {
+      if (res.status === 201) {
         sessionStorage.setItem("user", res.data);
         this.$router.push("/login");
       } else {

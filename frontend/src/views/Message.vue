@@ -1,32 +1,61 @@
 <template>
   <div class="container">
-    <MessageHeader />
+    <MessageHeader :userTo="userTo" />
     <main>
-      <div class="chat right">
-        <p>hi</p>
-        <span class="timestamp">5 mins ago</span>
-      </div>
-      <div class="chat left">
-        <p>hi</p>
-        <span class="timestamp">5 mins ago</span>
+      <div v-for="message in messages" :key="message.id">
+        <div v-if="message.to === userTo.username" class="chat right">
+          <p>{{ message.message }}</p>
+          <span class="timestamp">{{ message.sent_at }}</span>
+        </div>
+        <div v-else class="chat left">
+          <p>{{ message.message }}</p>
+          <span class="timestamp">{{ message.sent_at }}</span>
+        </div>
       </div>
     </main>
-    <ChatInput />
+    <ChatInput :userFrom="user.username" :userTo="userTo.username" />
   </div>
 </template>
 
 <script>
 import MessageHeader from "../components/MessageHeader/MessageHeader.vue";
 import ChatInput from "../components/ChatInput/ChatInput.vue";
+import axios from "../axios";
 export default {
   data() {
     return {
+      user: {},
+      userTo: {},
+      messages: [],
+      className: "",
       paramId: this.$route.params.id,
     };
   },
   components: {
     MessageHeader,
     ChatInput,
+  },
+  async created() {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user && user.token) {
+      this.user = user;
+      try {
+        const res = await axios.get(
+          `/messages/${this.paramId}/${user.username}`,
+          {
+            headers: { Authorization: `Bearer ${user.token}` },
+          }
+        );
+        if (res && res.status == 200) {
+          this.userTo = res.data.user;
+          this.messages.push(...res.data.messagesTo, ...res.data.messages_from);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      this.$router.push("/login");
+    }
   },
 };
 </script>

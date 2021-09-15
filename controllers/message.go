@@ -9,20 +9,50 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+func (h *Handler) GetChat(c echo.Context) (err error) {
+	user := &models.User{}
+	usernameTo := c.Param("username")
+	usernameFrom := c.Param("userFrom")
+
+	messages := []*models.Message{}
+	messagesTo := []*models.Message{}
+	db := h.DB.Clone()
+	if err = db.DB("chat").
+		C("users").
+		Find(bson.M{"username": usernameTo}).One(&user); err != nil {
+		return
+	}
+
+	if err = db.DB("chat").C("messages").
+		Find(bson.M{"to": usernameFrom, "from": usernameTo}).
+		All(&messagesTo); err != nil {
+		return
+	}
+
+	if err = db.DB("chat").C("messages").
+		Find(bson.M{"to": usernameTo, "from": usernameFrom}).
+		All(&messages); err != nil {
+		return
+	}
+	defer db.Close()
+
+	return c.JSON(http.StatusOK, echo.Map{"messages_from": messages, "messagesTo": messagesTo, "user": user})
+}
+
 func (h *Handler) CreateMessage(c echo.Context) (err error) {
 	u := &models.User{
 		ID: bson.ObjectIdHex(userIDFromToken(c)),
 	}
 	m := &models.Message{
-		ID:   bson.NewObjectId(),
-		From: u.ID.Hex(),
+		ID:        bson.NewObjectId(),
+		Timestamp: bson.MongoTimestamp(bson.Now().Day()),
 	}
 	if err = c.Bind(m); err != nil {
 		return
 	}
 
 	// Validation
-	if m.To == "" || m.Message == "" {
+	if m.From == "" || m.To == "" || m.Message == "" {
 		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "invalid to or message fields"}
 	}
 
@@ -44,16 +74,16 @@ func (h *Handler) CreateMessage(c echo.Context) (err error) {
 }
 
 func (h *Handler) FetchMessage(c echo.Context) (err error) {
-	userID := userIDFromToken(c)
-
+	username := c.Param("username")
+	db := h.DB.Clone()
 	// Retrieve messages from database
 	messages := []*models.Message{}
-	db := h.DB.Clone()
 	if err = db.DB("chat").C("messages").
-		Find(bson.M{"from": userID}).
+		Find(bson.M{"from": username}).
 		All(&messages); err != nil {
 		return
 	}
+
 	defer db.Close()
 
 	return c.JSON(http.StatusOK, messages)
