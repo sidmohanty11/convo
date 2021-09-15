@@ -34,7 +34,8 @@ export default {
           },
           { headers: { Authorization: `Bearer ${user.token}` } }
         );
-        location.reload();
+        this.message = "";
+        // location.reload();
       } catch (err) {
         console.log(err);
       }

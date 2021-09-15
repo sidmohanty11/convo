@@ -21,6 +21,7 @@
 import MessageHeader from "../components/MessageHeader/MessageHeader.vue";
 import ChatInput from "../components/ChatInput/ChatInput.vue";
 import axios from "../axios";
+import Pusher from "pusher-js";
 export default {
   data() {
     return {
@@ -36,6 +37,18 @@ export default {
     ChatInput,
   },
   async created() {
+    const pusher = new Pusher(process.env.VUE_APP_PUSHER_API_CONFIG, {
+      cluster: "ap2",
+    });
+
+    const channel = pusher.subscribe("my-channel");
+    channel.bind("my-event", function (data) {
+      realtime(data.message);
+    });
+
+    const realtime = (data) => {
+      this.messages.push(data);
+    };
     const user = JSON.parse(sessionStorage.getItem("user"));
     if (user && user.token) {
       this.user = user;
