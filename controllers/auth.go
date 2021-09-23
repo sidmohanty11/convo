@@ -26,7 +26,7 @@ func (h *Handler) Signup(c echo.Context) (err error) {
 	// Save user
 	db := h.DB.Clone()
 	defer db.Close()
-	if err = db.DB("chat").C("users").Insert(u); err != nil {
+	if err = db.DB("convo").C("users").Insert(u); err != nil {
 		return
 	}
 
@@ -43,7 +43,7 @@ func (h *Handler) Login(c echo.Context) (err error) {
 	// Find user
 	db := h.DB.Clone()
 	defer db.Close()
-	if err = db.DB("chat").C("users").
+	if err = db.DB("convo").C("users").
 		Find(bson.M{"email": u.Email, "password": u.Password}).One(u); err != nil {
 		if err == mgo.ErrNotFound {
 			return &echo.HTTPError{Code: http.StatusUnauthorized, Message: "invalid email or password"}
@@ -72,4 +72,17 @@ func userIDFromToken(c echo.Context) string {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	return claims["id"].(string)
+}
+
+func (h *Handler) GetUsers(c echo.Context) (err error) {
+	users := []*models.User{}
+
+	db := h.DB.Clone()
+
+	if err = db.DB("convo").C("users").Find(bson.M{}).All(&users); err != nil {
+		return
+	}
+	defer db.Close()
+
+	return c.JSON(http.StatusOK, users)
 }
