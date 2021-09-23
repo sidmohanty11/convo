@@ -11,7 +11,7 @@ func Setup(e *echo.Echo, h *controllers.Handler) {
 	e.POST("/signup", h.Signup)
 	e.POST("/message", h.CreateMessage)
 	e.POST("/room", h.CreateRoom)
-	e.GET("/room/:id", h.FetchRoomMessages)
+	e.GET("/room/:name", h.FetchRoomMessages)
 	e.GET("/rooms", h.GetRooms)
-	e.GET("/users", h.GetUsers)
+	e.GET("/user", h.GetUser)
 }

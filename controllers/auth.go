@@ -74,15 +74,21 @@ func userIDFromToken(c echo.Context) string {
 	return claims["id"].(string)
 }
 
-func (h *Handler) GetUsers(c echo.Context) (err error) {
-	users := []*models.User{}
+func (h *Handler) GetUser(c echo.Context) (err error) {
+	u := &models.User{
+		ID: bson.ObjectIdHex(userIDFromToken(c)),
+	}
 
 	db := h.DB.Clone()
 
-	if err = db.DB("convo").C("users").Find(bson.M{}).All(&users); err != nil {
-		return
-	}
 	defer db.Close()
 
-	return c.JSON(http.StatusOK, users)
+	if err = db.DB("convo").C("users").FindId(u.ID).One(u); err != nil {
+		if err == mgo.ErrNotFound {
+			return echo.ErrNotFound
+		}
+		return
+	}
+
+	return c.JSON(http.StatusOK, u)
 }

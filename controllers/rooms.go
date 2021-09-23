@@ -47,11 +47,12 @@ func (h *Handler) CreateRoom(c echo.Context) (err error) {
 
 func (h *Handler) FetchRoomMessages(c echo.Context) (err error) {
 	roomName := c.Param("name")
+
 	db := h.DB.Clone()
-	// Retrieve messages from database
+
 	room := &models.Room{}
 
-	if err = db.DB("convo").C("rooms").Find(bson.M{"room_name": roomName}).One(room); err != nil {
+	if err = db.DB("convo").C("rooms").Find(bson.M{"room_name": roomName}).One(&room); err != nil {
 		return
 	}
 

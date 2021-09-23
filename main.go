@@ -14,6 +14,7 @@ func main() {
 	e := echo.New()
 	e.Logger.SetLevel(log.ERROR)
 	e.Use(middleware.Logger())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{}))
 	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningKey: []byte(controllers.Key),
 		Skipper: func(c echo.Context) bool {
