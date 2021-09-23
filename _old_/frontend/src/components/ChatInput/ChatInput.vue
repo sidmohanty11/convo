@@ -23,17 +23,19 @@ export default {
   },
   methods: {
     async sendMessage() {
-      const user = JSON.parse(sessionStorage.getItem("user"));
+      const token = sessionStorage.getItem("token");
       try {
         const res = await axios.post(
-          "/messages",
+          "/message",
           {
             to: this.userTo,
             from: this.userFrom,
             message: this.message,
+            room_name: this.userFrom,
           },
-          { headers: { Authorization: `Bearer ${user.token}` } }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log(res);
         this.message = "";
         // location.reload();
       } catch (err) {

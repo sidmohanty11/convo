@@ -3,7 +3,7 @@
     <MessageHeader :userTo="roomName" />
     <main>
       <div v-for="message in messages" :key="message.id">
-        <div v-if="message.to === userTo.username" class="chat right">
+        <div v-if="message.from === user.username" class="chat right">
           <p>{{ message.message }}</p>
           <span class="timestamp">{{ message.sent_at }}</span>
         </div>

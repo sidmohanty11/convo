@@ -9,15 +9,10 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/pusher/pusher-http-go"
-	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
 func (h *Handler) CreateMessage(c echo.Context) (err error) {
-	u := &models.User{
-		ID: bson.ObjectIdHex(userIDFromToken(c)),
-	}
-
 	m := &models.Message{
 		ID:        bson.NewObjectId(),
 		Timestamp: bson.MongoTimestamp(bson.Now().Unix()),
@@ -51,17 +46,11 @@ func (h *Handler) CreateMessage(c echo.Context) (err error) {
 	// Find user from database
 	db := h.DB.Clone()
 	defer db.Close()
-	if err = db.DB("convo").C("users").FindId(u.ID).One(u); err != nil {
-		if err == mgo.ErrNotFound {
-			return echo.ErrNotFound
-		}
-		return
-	}
 
 	r := &models.Room{}
 
 	if err = db.DB("convo").C("rooms").Find(bson.M{"room_name": m.RoomName}).One(r); err != nil {
-		return err
+		return echo.ErrBadRequest
 	}
 
 	r.Messages = append(r.Messages, m)
