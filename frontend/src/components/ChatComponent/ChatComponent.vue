@@ -1,15 +1,15 @@
 <template>
   <div class="container">
     <img class="user-image" src="" />
-    <button @click="pushFunc(chat.to)" class="chat-component">
-      @{{ chat.to }}
+    <button @click="pushFunc(room.room_name)" class="chat-component">
+      @{{ room.room_name }}
     </button>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["chat", "pushFunc"],
+  props: ["room", "pushFunc"],
 };
 </script>
 

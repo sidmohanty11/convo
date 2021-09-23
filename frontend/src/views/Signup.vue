@@ -38,7 +38,6 @@ export default {
         image_url,
       });
       if (res.status === 201) {
-        sessionStorage.setItem("user", res.data);
         this.$router.push("/login");
       } else {
         console.log("error bro");

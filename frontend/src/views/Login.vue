@@ -24,9 +24,8 @@ export default {
     async login() {
       const { email, password } = this;
       const res = await axios.post("/login", { email, password });
-      console.log(res);
       if (res.status === 200) {
-        sessionStorage.setItem("user", JSON.stringify(res.data));
+        sessionStorage.setItem("token", res.data.token);
         this.$router.push("/");
       } else {
         console.log("error bro");

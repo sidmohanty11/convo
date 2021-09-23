@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <MessageHeader :userTo="userTo" />
+    <MessageHeader :userTo="roomName" />
     <main>
       <div v-for="message in messages" :key="message.id">
         <div v-if="message.to === userTo.username" class="chat right">
@@ -13,7 +13,7 @@
         </div>
       </div>
     </main>
-    <ChatInput :userFrom="user.username" :userTo="userTo.username" />
+    <ChatInput :userFrom="user.username" :userTo="roomName" />
   </div>
 </template>
 
@@ -26,9 +26,8 @@ export default {
   data() {
     return {
       user: {},
-      userTo: {},
       messages: [],
-      className: "",
+      roomName: "",
       paramId: this.$route.params.id,
     };
   },
@@ -37,37 +36,33 @@ export default {
     ChatInput,
   },
   async created() {
-    const pusher = new Pusher(process.env.VUE_APP_PUSHER_API_CONFIG, {
-      cluster: "ap2",
-    });
+    // const pusher = new Pusher(process.env.VUE_APP_PUSHER_API_CONFIG, {
+    //   cluster: "ap2",
+    // });
 
-    const channel = pusher.subscribe("my-channel");
-    channel.bind("my-event", function (data) {
-      realtime(data.message);
-    });
+    // const channel = pusher.subscribe("my-channel");
+    // channel.bind("my-event", function (data) {
+    //   realtime(data.message);
+    // });
 
-    const realtime = (data) => {
-      this.messages.push(data);
-    };
-    const user = JSON.parse(sessionStorage.getItem("user"));
-    if (user && user.token) {
-      this.user = user;
-      try {
-        const res = await axios.get(
-          `/messages/${this.paramId}/${user.username}`,
-          {
-            headers: { Authorization: `Bearer ${user.token}` },
-          }
-        );
-        if (res && res.status == 200) {
-          this.userTo = res.data.user;
-          this.messages.push(...res.data.messagesTo, ...res.data.messages_from);
-        }
-      } catch (err) {
-        console.log(err);
+    // const realtime = (data) => {
+    //   this.messages.push(data);
+    // };
+    const token = sessionStorage.getItem("token");
+    try {
+      const res = await axios.get(`/room/${this.paramId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const res2 = await axios.get("/user", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res && res.status == 200) {
+        this.user = res2.data;
+        this.roomName = res.data.room_name;
+        this.messages = res.data.messages;
       }
-    } else {
-      this.$router.push("/login");
+    } catch (err) {
+      console.log(err);
     }
   },
 };

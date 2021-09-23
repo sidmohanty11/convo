@@ -2,12 +2,12 @@
   <div>
     <router-link to="/"><i class="fas fa-chevron-left"></i>Back</router-link>
     <div class="header">
-      <img class="user-image" :src="userTo.image_url" :alt="userTo.username" />
-      <h1>@{{ userTo.username }}</h1>
-      <span
+      <!-- <img class="user-image" :src="userTo.image_url" :alt="userTo.username" /> -->
+      <h1>@{{ userTo }}</h1>
+      <!-- <span
         ><i class="fas fa-circle"></i>
         {{ new Date(userTo.last_seen).getMinutes() }} mins ago</span
-      >
+      > -->
     </div>
   </div>
 </template>
@@ -16,7 +16,7 @@
 export default {
   props: {
     userTo: {
-      default: {},
+      default: "",
     },
   },
 };

@@ -12,9 +12,9 @@
       <input class="search-input" placeholder="Search" />
     </div>
     <ChatComponent
-      v-for="chat in chats"
-      :key="chat.id"
-      :chat="chat"
+      v-for="room in user.rooms"
+      :key="room.id"
+      :room="room"
       :pushFunc="pushFunc"
     />
 
@@ -42,45 +42,36 @@ export default {
   },
   methods: {
     pushFunc(id) {
-      this.$router.push(`/message/${id}`);
+      this.$router.push(`/messages/${id}`);
     },
     async addChat() {
-      const username = prompt("Who do you want to chat with?");
-      if (username) {
+      const token = sessionStorage.getItem("token");
+      const room_name = prompt("Who do you want to chat with?");
+      if (room_name) {
         const res = await axios.post(
-          "/messages",
+          "/room",
           {
-            to: username,
-            message: "Hello!",
-            from: this.user.username,
+            room_name,
           },
           {
-            headers: { Authorization: `Bearer ${this.user.token}` },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
         console.log(res);
-        if (res) {
-          this.pushFunc(res.data.to);
-        }
+        // if (res) {
+        //   this.pushFunc(res.data.to);
+        // }
       } else {
         console.log("error bro");
       }
     },
   },
   async created() {
-    const user = JSON.parse(sessionStorage.getItem("user"));
-    if (user && user.token) {
-      this.user = user;
-      const res = await axios.get(`/messages/${user.username}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      if (res) {
-        this.chats = res.data;
-      }
-      console.log(res);
-    } else {
-      this.$router.push("/login");
-    }
+    const token = sessionStorage.getItem("token");
+    const res = await axios.get("/user", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    this.user = res.data;
   },
 };
 </script>
