@@ -22,6 +22,11 @@ const routes = [
     name: 'Signup',
     component: () => import('../views/Signup.vue'),
   },
+  {
+    path: '/chat/:id',
+    name: 'Chat',
+    component: () => import('../views/Chat.vue'),
+  },
 ];
 
 const router = createRouter({
