@@ -1,0 +1,57 @@
+{
+  "id": 1,
+  "password": "password",
+  "number": "9438277475",
+  "username": "sid",
+  "last_seen": "now",
+  "contacts": [
+    {
+      "id": 1,
+      "number": "943828899",
+      "saved_name": "radhe"
+    },
+    {
+      "id": 2,
+      "number": "942428899",
+      "saved_name": "shyam"
+    }
+  ],
+  "chats": [
+    {
+      "id": 1,
+      "name": "lol_group",
+      "messages": [
+        {
+          "id": 1,
+          "username": "sid",
+          "message": "hi",
+          "timestamp": "now"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "no_group",
+      "messages": [
+        {
+          "id": 1,
+          "username": "sid",
+          "message": "hi",
+          "timestamp": "now"
+        },
+        {
+          "id": 2,
+          "username": "radhe",
+          "message": "hi",
+          "timestamp": "now"
+        },
+        {
+          "id": 3,
+          "username": "shyam",
+          "message": "hi",
+          "timestamp": "now"
+        }
+      ]
+    }
+  ]
+}

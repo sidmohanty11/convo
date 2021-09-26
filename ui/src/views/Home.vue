@@ -2,8 +2,39 @@
   <div class="home">
     <NavbarVue />
     <div class="flex justify-center">
-      <button class="btn btn-primary m-2">Add Contact</button>
-      <button class="btn btn-primary m-2">Add Chat</button>
+      <!-- modal <add contact> -->
+      <label for="my-modal-2" class="btn btn-accent m-2 modal-button"
+        >Add Contact</label
+      >
+      <input type="checkbox" id="my-modal-2" class="modal-toggle" />
+      <div class="modal">
+        <div class="modal-box">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Name of the contact:</span>
+            </label>
+            <input
+              type="text"
+              placeholder="name"
+              class="input input-primary input-bordered"
+            />
+            <label class="label">
+              <span class="label-text">Number:</span>
+            </label>
+            <input
+              type="text"
+              placeholder="number"
+              class="input input-primary input-bordered"
+            />
+          </div>
+          <div class="modal-action">
+            <label for="my-modal-2" class="btn btn-success">Save</label>
+            <label for="my-modal-2" class="btn btn-ghost">Close</label>
+          </div>
+        </div>
+      </div>
+      <!-- end -->
+      <AddChat />
     </div>
     <div class="container mx-auto">
       <ChatComponent />
@@ -14,12 +45,14 @@
 <script>
 import NavbarVue from '../components/Navbar.vue';
 import ChatComponent from '../components/ChatComponent.vue';
+import AddChat from '../components/AddChat.vue';
 
 export default {
   name: 'Home',
   components: {
     NavbarVue,
     ChatComponent,
+    AddChat,
   },
 };
 </script>

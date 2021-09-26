@@ -1,10 +1,12 @@
 <template>
   <div class="navbar mb-2 shadow-lg bg-neutral text-neutral-content">
     <div class="flex-1 px-2 mx-2">
-      <span class="text-lg font-bold"> Convo </span>
+      <span class="font-bold text-3xl logo-font"> Convo. </span>
     </div>
     <div class="flex-none">
-      <button class="btn btn-ghost">hi #NAME</button>
+      <button class="btn btn-ghost">
+        hi,<span class="text-red-600"> #NAME</span>
+      </button>
       <label for="my-modal" class="btn btn-ghost modal-button"
         >My Contacts</label
       >
@@ -30,4 +32,9 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Yomogi&display=swap');
+
+.logo-font {
+  font-family: 'Yomogi', cursive;
+}
 </style>
