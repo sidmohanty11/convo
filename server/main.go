@@ -3,7 +3,6 @@ package main
 import (
 	"convo_backend/handlers"
 	"convo_backend/routes"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -17,6 +16,7 @@ func main() {
 
 	// middlewares
 	e.Use(middleware.Logger())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{}))
 	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningKey: []byte(handlers.Key),
 		Skipper: func(c echo.Context) bool {
@@ -25,9 +25,6 @@ func main() {
 			}
 			return false
 		},
-	}))
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete, http.MethodPatch},
 	}))
 
 	// db connection

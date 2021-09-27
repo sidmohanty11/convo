@@ -13,7 +13,8 @@ import (
 
 func (h *Handler) Signup(c echo.Context) (err error) {
 	u := &models.User{
-		ID: bson.NewObjectId(),
+		ID:       bson.NewObjectId(),
+		LastSeen: time.Now(),
 	}
 
 	if err = c.Bind(u); err != nil {
@@ -35,7 +36,9 @@ func (h *Handler) Signup(c echo.Context) (err error) {
 }
 
 func (h *Handler) Login(c echo.Context) (err error) {
-	u := &models.User{}
+	u := &models.User{
+		LastSeen: time.Now(),
+	}
 	if err = c.Bind(u); err != nil {
 		return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "something went wrong"}
 	}

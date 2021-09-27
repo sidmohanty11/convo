@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"convo_backend/models"
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -23,6 +24,7 @@ func (h *Handler) AddChat(c echo.Context) (err error) {
 
 	for _, person := range chat.Participants {
 		u := &models.User{}
+		fmt.Println(person)
 		if err = db.DB("convo").C("users").FindId(bson.ObjectIdHex(person)).One(u); err != nil {
 			if err == mgo.ErrNotFound {
 				return echo.ErrNotFound

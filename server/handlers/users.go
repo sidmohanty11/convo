@@ -26,6 +26,24 @@ func (h *Handler) GetUserById(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, u)
 }
 
+func (h *Handler) GetActiveUser(c echo.Context) (err error) {
+	u := &models.User{
+		ID: bson.ObjectIdHex(userIDFromToken(c)),
+	}
+
+	db := h.DB.Clone()
+	defer db.Close()
+
+	if err = db.DB("convo").C("users").FindId(u.ID).One(u); err != nil {
+		if err == mgo.ErrNotFound {
+			return echo.ErrNotFound
+		}
+		return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "db not responding"}
+	}
+
+	return c.JSON(http.StatusOK, u)
+}
+
 func (h *Handler) GetUserByNumber(c echo.Context) (err error) {
 	number := c.Param("number")
 	u := &models.User{}
