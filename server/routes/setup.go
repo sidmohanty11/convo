@@ -12,11 +12,10 @@ func Setup(h *handlers.Handler, e *echo.Echo) {
 
 	e.GET("/activeUser", h.GetActiveUser)
 	e.GET("/user/:id", h.GetUserById)
-	e.GET("/users/:number", h.GetUserByNumber)
 
 	e.POST("/contacts/add", h.AddContactOfUser)
 
-	e.POST("/chat/add", h.AddChat)
+	e.POST("/chats/add", h.AddChat)
 	e.GET("/chats/:id", h.GetChatById)
 
 	e.POST("/messages/add/:id", h.MessageByChatId)

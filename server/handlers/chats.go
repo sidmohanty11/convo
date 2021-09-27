@@ -2,11 +2,9 @@ package handlers
 
 import (
 	"convo_backend/models"
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -23,18 +21,15 @@ func (h *Handler) AddChat(c echo.Context) (err error) {
 	defer db.Close()
 
 	for _, person := range chat.Participants {
-		u := &models.User{}
-		fmt.Println(person)
-		if err = db.DB("convo").C("users").FindId(bson.ObjectIdHex(person)).One(u); err != nil {
-			if err == mgo.ErrNotFound {
-				return echo.ErrNotFound
-			}
-			return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "db not responding"}
+		u, err := h.GetUserByNumber(person)
+
+		if err != nil {
+			return c.JSON(http.StatusNotFound, echo.Map{"message": "check if the user(s) do have a Convo account with specified number!"})
 		}
 
 		u.Chats = append(u.Chats, chat)
 
-		if err = db.DB("convo").C("users").UpdateId(bson.ObjectIdHex(person), u); err != nil {
+		if err = db.DB("convo").C("users").UpdateId(u.ID, u); err != nil {
 			return &echo.HTTPError{Code: http.StatusInternalServerError, Message: "db not responding"}
 		}
 	}
