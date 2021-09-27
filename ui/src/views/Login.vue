@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="alert alert-error" v-show="err !== ''">
+      <div class="flex-1">
+        <label>{{ err }}</label>
+      </div>
+    </div>
     <div
       class="
         flex
@@ -27,12 +32,14 @@
           <h2 class="card-title text-gray-400 text-center">Login | Convo.</h2>
           <div class="form-control">
             <input
+              v-model="formData.number"
               type="text"
               placeholder="number"
               class="input input-bordered m-2"
             />
             <input
-              type="text"
+              v-model="formData.password"
+              type="password"
               placeholder="password"
               class="input input-bordered m-2"
             />
@@ -45,7 +52,7 @@
               >
             </p>
           </div>
-          <button class="btn glass rounded-full">Login</button>
+          <button @click="login" class="btn glass rounded-full">Login</button>
         </div>
       </div>
     </div>
@@ -58,7 +65,39 @@
 </template>
 
 <script>
-export default {};
+import axios from '../axios';
+
+export default {
+  data() {
+    return {
+      formData: {
+        password: '',
+        number: '',
+      },
+      err: '',
+    };
+  },
+  methods: {
+    async login() {
+      const { formData } = this;
+      if (formData.number.length !== 10) {
+        this.err = 'Wrong Credentials!';
+      }
+
+      if (this.err !== '') {
+        return this.err;
+      }
+
+      const res = await axios.post('/login', { ...formData });
+
+      if (res.status === 200) {
+        sessionStorage.setItem('token', res.data.token);
+      }
+
+      return this.$router.push('/');
+    },
+  },
+};
 </script>
 
 <style>

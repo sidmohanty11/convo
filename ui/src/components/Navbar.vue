@@ -5,7 +5,7 @@
     </div>
     <div class="flex-none">
       <button class="btn btn-ghost">
-        hi,<span class="text-red-600"> #NAME</span>
+        hi,<span class="text-red-600"> #{{ username }}</span>
       </button>
       <label for="my-modal" class="btn btn-ghost modal-button"
         >My Contacts</label
@@ -13,7 +13,7 @@
       <input type="checkbox" id="my-modal" class="modal-toggle" />
       <div class="modal">
         <div class="modal-box">
-          <contacts />
+          <Contacts :contacts="contacts" />
           <div class="modal-action">
             <label for="my-modal" class="btn">Close</label>
           </div>
@@ -28,6 +28,7 @@ import Contacts from './Contacts.vue';
 
 export default {
   components: { Contacts },
+  props: ['username', 'contacts'],
 };
 </script>
 

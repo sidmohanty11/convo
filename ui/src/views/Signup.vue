@@ -96,16 +96,19 @@ export default {
         this.err = 'Username must be greater than 5 letters!';
       } else if (!formData.password.match(validatePassword)) {
         this.err = 'Password is too weak!';
-      } else {
-        this.err = 'Something went wrong!';
       }
 
       if (this.err !== '') {
         return this.err;
       }
 
-      const res = await axios.post('/signup', { ...formData, last_seen: new Date().toString() });
-      return console.log(res);
+      const res = await axios.post('/signup', { ...formData });
+      if (res.status === 201) {
+        return this.$router.push('/login');
+      }
+
+      this.err = 'Something went wrong!';
+      return this.err;
     },
   },
 };

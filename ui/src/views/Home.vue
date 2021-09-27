@@ -1,6 +1,12 @@
 <template>
   <div class="home">
-    <NavbarVue />
+    <NavbarVue :username="user.username" :contacts="user.contacts" />
+    <p class="text-center">
+      Your last login was at:
+      <span class="text-green-500 font-bold">{{
+        new Date(user.last_seen).toLocaleString()
+      }}</span>
+    </p>
     <div class="flex justify-center">
       <!-- modal <add contact> -->
       <label for="my-modal-2" class="btn btn-accent m-2 modal-button"
@@ -9,11 +15,13 @@
       <input type="checkbox" id="my-modal-2" class="modal-toggle" />
       <div class="modal">
         <div class="modal-box">
+          <span class="label-text text-red-500">{{ err }}</span>
           <div class="form-control">
             <label class="label">
               <span class="label-text">Name of the contact:</span>
             </label>
             <input
+              v-model="addContactInfo.saved_as"
               type="text"
               placeholder="name"
               class="input input-primary input-bordered"
@@ -22,22 +30,27 @@
               <span class="label-text">Number:</span>
             </label>
             <input
+              v-model="addContactInfo.number"
               type="text"
               placeholder="number"
               class="input input-primary input-bordered"
             />
           </div>
           <div class="modal-action">
-            <label for="my-modal-2" class="btn btn-success">Save</label>
+            <label class="btn btn-success" @click="addContact">Save</label>
             <label for="my-modal-2" class="btn btn-ghost">Close</label>
           </div>
         </div>
       </div>
       <!-- end -->
-      <AddChat />
+      <AddChat :contacts="user.contacts" :userId="user.id" />
     </div>
     <div class="container mx-auto">
-      <ChatComponent />
+      <ChatComponent
+        v-for="chat in user.chats"
+        :key="chat.id"
+        @click="$router.push(chat.id)"
+      />
     </div>
   </div>
 </template>
@@ -50,21 +63,64 @@ import axios from '../axios';
 
 export default {
   name: 'Home',
+  data() {
+    return {
+      user: {
+        chats: [],
+        contacts: [],
+        id: '',
+        last_seen: '',
+        number: '',
+        username: '',
+      },
+      addContactInfo: {
+        saved_as: '',
+        number: '',
+      },
+      token: '',
+      err: '',
+    };
+  },
   components: {
     NavbarVue,
     ChatComponent,
     AddChat,
   },
   async created() {
-    const token = sessionStorage.getItem('token');
-    if (!token) {
+    this.token = sessionStorage.getItem('token');
+    if (!this.token) {
       this.$router.push('/login');
     }
-    const res = await axios.get('/user', {
-      headers: { Authorization: `Bearer ${token}` },
+    const { data } = await axios.get('/activeUser', {
+      headers: { Authorization: `Bearer ${this.token}` },
     });
 
-    console.log(res);
+    this.user = data;
+  },
+  methods: {
+    async addContact() {
+      if (this.addContactInfo.saved_as === '') {
+        this.err = 'You can not fool me bro!';
+      } else if (this.addContactInfo.number.length !== 10) {
+        this.err = 'Numbers in India are of 10 digits, right?';
+      }
+
+      if (this.err !== '') {
+        return this.err;
+      }
+
+      await axios.post(
+        '/contacts/add',
+        {
+          ...this.addContactInfo,
+        },
+        {
+          headers: { Authorization: `Bearer ${this.token}` },
+        },
+      );
+
+      return window.location.reload();
+    },
   },
 };
 </script>
