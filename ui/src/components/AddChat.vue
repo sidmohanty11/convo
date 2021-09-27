@@ -3,7 +3,9 @@
   <input type="checkbox" id="addChat" class="modal-toggle" />
   <div class="modal">
     <div class="modal-box">
-      <span class="label-text text-red-500">{{ err }}</span>
+      <div>
+        <span class="label-text text-red-500">{{ err }}</span>
+      </div>
       <select
         v-model="selectedOption"
         class="select select-bordered select-primary w-full max-w-xs"
@@ -35,7 +37,7 @@
               class="checkbox checkbox-accent"
               :id="contact._id"
               v-model="addChatInfo.participants"
-              :value="contact._id"
+              :value="contact.number"
             />
           </label>
         </div>
@@ -82,27 +84,31 @@ export default {
       err: '',
     };
   },
-  props: ['contacts', 'userId'],
+  props: ['contacts', 'userNumber'],
   methods: {
     async addChat() {
       const token = sessionStorage.getItem('token');
       if (this.selectedOption === 'group' && this.addChatInfo.name !== '') {
-        this.addChatInfo.participants.push(this.userId);
+        this.addChatInfo.participants.push(this.userNumber);
 
-        const res = await axios.post(
-          '/chat/add',
-          {
-            ...this.addChatInfo,
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-
-        console.log(res);
+        try {
+          const res = await axios.post(
+            '/chats/add',
+            {
+              ...this.addChatInfo,
+            },
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+          console.log(res);
+        } catch (err) {
+          this.err = `Check if the user in on Convo? because ${err}`;
+          return this.err;
+        }
       } else if (this.selectedOption === 'dm') {
         // eslint-disable-next-line no-underscore-dangle
-        const participants = [this.selectedUserForDM._id, this.userId];
+        const participants = [this.selectedUserForDM.number, this.userNumber];
         const name = this.selectedUserForDM.saved_as;
 
         if (participants.length < 2 && name === '') {
@@ -111,7 +117,7 @@ export default {
         }
 
         const res = await axios.post(
-          '/chat/add',
+          '/chats/add',
           {
             name,
             participants,
@@ -123,9 +129,7 @@ export default {
 
         console.log(res);
       }
-
-      this.err = 'Make sure to provide correct details!';
-      return this.err;
+      return { success: 'true' };
     },
   },
 };

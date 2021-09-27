@@ -4,7 +4,7 @@
       <span class="font-bold text-3xl logo-font"> Convo. </span>
     </div>
     <div class="flex-none">
-      <button class="btn btn-ghost">
+      <button class="btn btn-ghost" @click="logout">
         hi,<span class="text-red-600"> #{{ username }}</span>
       </button>
       <label for="my-modal" class="btn btn-ghost modal-button"
@@ -29,6 +29,12 @@ import Contacts from './Contacts.vue';
 export default {
   components: { Contacts },
   props: ['username', 'contacts'],
+  methods: {
+    logout() {
+      sessionStorage.removeItem('token');
+      return this.$router.push('/login');
+    },
+  },
 };
 </script>
 

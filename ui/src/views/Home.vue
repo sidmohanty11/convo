@@ -43,7 +43,7 @@
         </div>
       </div>
       <!-- end -->
-      <AddChat :contacts="user.contacts" :userId="user.id" />
+      <AddChat :contacts="user.contacts" :userNumber="user.number" />
     </div>
     <div class="container mx-auto">
       <ChatComponent
