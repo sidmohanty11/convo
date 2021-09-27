@@ -46,6 +46,7 @@
 import NavbarVue from '../components/Navbar.vue';
 import ChatComponent from '../components/ChatComponent.vue';
 import AddChat from '../components/AddChat.vue';
+import axios from '../axios';
 
 export default {
   name: 'Home',
@@ -53,6 +54,17 @@ export default {
     NavbarVue,
     ChatComponent,
     AddChat,
+  },
+  async created() {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      this.$router.push('/login');
+    }
+    const res = await axios.get('/user', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    console.log(res);
   },
 };
 </script>

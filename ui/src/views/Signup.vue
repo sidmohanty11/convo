@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="alert alert-error" v-show="err !== ''">
+      <div class="flex-1">
+        <label>{{ err }}</label>
+      </div>
+    </div>
     <div
       class="
         flex
@@ -27,12 +32,20 @@
           <h2 class="card-title text-gray-400 text-center">Signup | Convo.</h2>
           <div class="form-control">
             <input
+              v-model="formData.number"
               type="text"
               placeholder="number"
               class="input input-bordered m-2"
             />
             <input
+              v-model="formData.username"
               type="text"
+              placeholder="username"
+              class="input input-bordered m-2"
+            />
+            <input
+              v-model="formData.password"
+              type="password"
               placeholder="password"
               class="input input-bordered m-2"
             />
@@ -45,7 +58,7 @@
               >
             </p>
           </div>
-          <button class="btn glass rounded-full">Login</button>
+          <button class="btn glass rounded-full" @click="signup">Signup</button>
         </div>
       </div>
     </div>
@@ -58,7 +71,44 @@
 </template>
 
 <script>
-export default {};
+import axios from '../axios';
+
+export default {
+  data() {
+    return {
+      formData: {
+        username: '',
+        password: '',
+        number: '',
+      },
+      err: '',
+    };
+  },
+  methods: {
+    async signup() {
+      const { formData } = this;
+      const validatePassword = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+      if (formData.number === '' || formData.username === '' || formData.password === '') {
+        this.err = 'Provide valid details!';
+      } else if (formData.number.length !== 10) {
+        this.err = 'Number must be 10 digits long!';
+      } else if (formData.username.length <= 5) {
+        this.err = 'Username must be greater than 5 letters!';
+      } else if (!formData.password.match(validatePassword)) {
+        this.err = 'Password is too weak!';
+      } else {
+        this.err = 'Something went wrong!';
+      }
+
+      if (this.err !== '') {
+        return this.err;
+      }
+
+      const res = await axios.post('/signup', { ...formData, last_seen: new Date().toString() });
+      return console.log(res);
+    },
+  },
+};
 </script>
 
 <style>
