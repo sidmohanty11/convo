@@ -20,11 +20,11 @@ func (h *Handler) AddChat(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	for _, person := range chat.Participants {
-		u, err := h.GetUserByNumber(person)
+	for _, number := range chat.Participants {
+		u, err := h.GetUserByNumber(number)
 
 		if err != nil {
-			return c.JSON(http.StatusNotFound, echo.Map{"message": "check if the user(s) do have a Convo account with specified number!"})
+			return &echo.HTTPError{Code: http.StatusNotFound, Message: "check if the user(s) do have a Convo account with specified number!"}
 		}
 
 		u.Chats = append(u.Chats, chat)

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"convo_backend/models"
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -49,8 +48,7 @@ func (h *Handler) GetUserByNumber(number string) (u *models.User, err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	fmt.Println(number)
-	if err = db.DB("convo").C("users").Find(bson.M{"number": number}).One(u); err != nil {
+	if err = db.DB("convo").C("users").Find(bson.M{"number": number}).One(&u); err != nil {
 		if err == mgo.ErrNotFound {
 			return nil, echo.ErrNotFound
 		}
