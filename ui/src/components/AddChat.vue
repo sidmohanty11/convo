@@ -84,7 +84,7 @@ export default {
       err: '',
     };
   },
-  props: ['contacts', 'userNumber'],
+  props: ['contacts', 'userNumber', 'userName'],
   methods: {
     async addChat() {
       const token = sessionStorage.getItem('token');
@@ -92,7 +92,7 @@ export default {
         this.addChatInfo.participants.push(this.userNumber);
 
         try {
-          const res = await axios.post(
+          await axios.post(
             '/chats/add',
             {
               ...this.addChatInfo,
@@ -101,7 +101,6 @@ export default {
               headers: { Authorization: `Bearer ${token}` },
             },
           );
-          console.log(res);
         } catch (err) {
           this.err = `Check if the user in on Convo? because ${err}`;
           return this.err;
@@ -109,14 +108,14 @@ export default {
       } else if (this.selectedOption === 'dm') {
         // eslint-disable-next-line no-underscore-dangle
         const participants = [this.selectedUserForDM.number, this.userNumber];
-        const name = this.selectedUserForDM.saved_as;
+        const name = `${this.selectedUserForDM.saved_as} and ${this.userName}`;
 
         if (participants.length < 2 && name === '') {
           this.err = 'Do not even try to fool me bro!';
           return this.err;
         }
 
-        const res = await axios.post(
+        await axios.post(
           '/chats/add',
           {
             name,
@@ -126,10 +125,8 @@ export default {
             headers: { Authorization: `Bearer ${token}` },
           },
         );
-
-        console.log(res);
       }
-      return { success: 'true' };
+      return window.location.reload();
     },
   },
 };

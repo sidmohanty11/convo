@@ -43,12 +43,17 @@
         </div>
       </div>
       <!-- end -->
-      <AddChat :contacts="user.contacts" :userNumber="user.number" />
+      <AddChat
+        :contacts="user.contacts"
+        :userNumber="user.number"
+        :userName="user.username"
+      />
     </div>
     <div class="container mx-auto">
       <ChatComponent
         v-for="chat in user.chats"
         :key="chat.id"
+        :chatName="chat.name"
         @click="$router.push(chat.id)"
       />
     </div>
