@@ -5,13 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"gopkg.in/mgo.v2/bson"
-)
-
-var (
-	upgrader = websocket.Upgrader{}
 )
 
 func (h *Handler) MessageByChatId(c echo.Context) (err error) {
