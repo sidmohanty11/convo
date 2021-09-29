@@ -20,13 +20,15 @@
       </button>
     </div>
     <div class="px-2 mx-2">
-      <h1 class="text-lg font-bold">#Name</h1>
+      <h1 class="text-lg font-bold">#{{ chatName }}</h1>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: ['chatName'],
+};
 </script>
 
 <style>

@@ -54,7 +54,7 @@
         v-for="chat in user.chats"
         :key="chat.id"
         :chatName="chat.name"
-        @click="$router.push(chat.id)"
+        @click="$router.push(`/chat/${chat.id}`)"
       />
     </div>
   </div>

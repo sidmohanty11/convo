@@ -17,9 +17,7 @@
         card
         bg-base-200
       "
-      style="
-        background-image: url('https://images.unsplash.com/photo-1607357221935-9133bb4b44ca?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1470&q=80');
-      "
+      style="background-color: black"
     >
       <div class="card glass lg:card-side text-neutral-content">
         <figure class="p-6">
@@ -53,16 +51,18 @@
           <div class="card-actions">
             <p class="text-gray-200">
               Already have an account?
-              <router-link class="text-gray-800" to="/login"
+              <router-link class="text-gray-400" to="/login"
                 >Login!</router-link
               >
             </p>
           </div>
-          <button class="btn glass rounded-full" @click="signup">Signup</button>
+          <button class="btn glass rounded-full text-gray-400" @click="signup">
+            Signup
+          </button>
         </div>
       </div>
     </div>
-    <footer class="p-4 footer bg-base-300 text-base-content footer-center">
+    <footer class="p-4 footer text-base-content footer-center bg-black">
       <div>
         <p>Copyright © 2021 - All right reserved by Sidharth Ltd</p>
       </div>
