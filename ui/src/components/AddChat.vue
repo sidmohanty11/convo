@@ -101,8 +101,8 @@ export default {
               headers: { Authorization: `Bearer ${token}` },
             },
           );
-        } catch (err) {
-          this.err = `Check if the user in on Convo? because ${err}`;
+        } catch (e) {
+          this.err = `Check if the user in on Convo? because ${e}`;
           return this.err;
         }
       } else if (this.selectedOption === 'dm') {
@@ -115,16 +115,21 @@ export default {
           return this.err;
         }
 
-        await axios.post(
-          '/chats/add',
-          {
-            name,
-            participants,
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
+        await axios
+          .post(
+            '/chats/add',
+            {
+              name,
+              participants,
+            },
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .catch((e) => {
+            this.err = `Check if the user in on Convo? because ${e}`;
+            return this.err;
+          });
       }
       return window.location.reload();
     },
