@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import Pusher from 'pusher-js';
 import ChatHeader from '../components/ChatHeader.vue';
 import ChatBody from '../components/ChatBody.vue';
 import ChatInput from '../components/ChatInput.vue';
@@ -31,6 +32,21 @@ export default {
   async created() {
     this.token = sessionStorage.getItem('token');
     this.chatId = this.$route.params.id;
+
+    const pusher = new Pusher(process.env.VUE_APP_PUSHER_API_CONFIG, {
+      cluster: 'ap2',
+    });
+
+    const channel = pusher.subscribe('my-channel');
+
+    const realtime = (data) => {
+      this.chat.messages.push(data);
+    };
+
+    channel.bind('my-event', (data) => {
+      realtime(data.message);
+    });
+
     if (!this.token) {
       return this.$router.push('/login');
     }

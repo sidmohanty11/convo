@@ -41,6 +41,7 @@ export default {
         return this.err;
       }
 
+      this.content = '';
       const { data: message } = await axios.post(
         `/messages/add/${this.chatId}`,
         {
@@ -52,8 +53,7 @@ export default {
         },
       );
 
-      this.content = '';
-      return console.log(message);
+      return message;
     },
   },
 };
