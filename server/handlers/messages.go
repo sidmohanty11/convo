@@ -3,9 +3,15 @@ package handlers
 import (
 	"convo_backend/models"
 	"net/http"
+	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"gopkg.in/mgo.v2/bson"
+)
+
+var (
+	upgrader = websocket.Upgrader{}
 )
 
 func (h *Handler) MessageByChatId(c echo.Context) (err error) {
@@ -14,7 +20,8 @@ func (h *Handler) MessageByChatId(c echo.Context) (err error) {
 	chat := &models.Chat{}
 
 	msg := &models.Message{
-		ID: bson.NewObjectId(),
+		ID:        bson.NewObjectId(),
+		Timestamp: time.Now(),
 	}
 
 	if err = c.Bind(msg); err != nil {
